@@ -67,8 +67,7 @@ class Dinosaur:
         self.dino_rect.y = 350
         self.step_index +=1
 
-        if self.dino_duck != self.dino_duck:
-            self.dino_duck = False 
+       
 
 
     def draw(self, screen):
