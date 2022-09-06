@@ -66,7 +66,7 @@ class Dinosaur:
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = 350
         self.step_index +=1
-
+        ##fin
        
 
 
