@@ -99,11 +99,11 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:  
-            self.abstrac("Press any key to play", 30, 550, 400)
+            self.abstrac("Press any key to play", 30, 550, 300)
         else: 
             self.abstrac(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height)
-            self.abstrac(f"You lost, your score was: {self.score}", 30, 550, 400)
-            self.abstrac("Press any key to play again", 30, 550, 500)
+            self.abstrac(f"You lost, your score was: {self.score}", 30, 550, 350)
+            self.abstrac("Press any key to play again", 30, 550, 400)
         
         self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 140))
 
