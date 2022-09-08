@@ -3,7 +3,7 @@ import pygame
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 
-from dino_runner.utils.constants import BG, FONT_STYLE, ICON, RUNNING, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
 
 class Game:
@@ -38,6 +38,8 @@ class Game:
         # Game loop: events - update - draw
         self.playing = True
         self.obstacle_manager.reset_obstacles()
+        self.score = 0
+        self.game_speed = 20
         while self.playing:
             self.events()
             self.update()
@@ -80,11 +82,7 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        font = pygame.font.Font(FONT_STYLE, 30)
-        text = font.render(f"Score: {self.score}", True, (0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (1000, 50)
-        self.screen.blit(text, text_rect)
+        self.abstrac(f"Score: {self.score}", 30, 1000, 50)
 
     def handle_events_on_menu(self):
         for event in pygame.event.get():
@@ -95,21 +93,30 @@ class Game:
                 self.run()
     
     def show_menu(self):
-        print(self.death_count)
+        
         self.screen.fill((255, 255, 255))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:  
-            font = pygame.font.Font(FONT_STYLE, 30)
-            text = font.render("Press any key to start", True, (0, 0, 0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
+            self.abstrac("Press any key to play", 30, 550, 400)
         else: 
-            pass 
+            self.abstrac(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height)
+            self.abstrac(f"You lost, your score was: {self.score}", 30, 550, 400)
+            self.abstrac("Press any key to play again", 30, 550, 500)
         
-        self.screen.blit(ICON, (half_screen_width - 20, half_screen_height - 140))
+        self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 140))
 
         pygame.display.update()
         self.handle_events_on_menu()
+
+    
+    def abstrac(self, texto, tamaño_de_fuente, pos_x, pos_y):
+        font = pygame.font.Font(FONT_STYLE, tamaño_de_fuente)
+        text = font.render(texto, True, (0, 0, 0))
+        text_rect = text.get_rect()
+        text_rect.center = (pos_x, pos_y)
+        self.screen.blit(text, text_rect)
+
+
+
