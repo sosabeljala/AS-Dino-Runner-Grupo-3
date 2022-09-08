@@ -5,9 +5,9 @@ from dino_runner.utils.constants import BIRD
 
 class Bird(Obstacle):
     def __init__(self):
-        self.type = 0
+        self.list_pos = 0
         self.fly = 0
-        super().__init__(BIRD, self.type)
+        super().__init__(BIRD, self.list_pos)
         self.rect.y = random.randint(100, 310)
 
 
