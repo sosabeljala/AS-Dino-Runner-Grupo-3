@@ -82,7 +82,7 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        self.abstrac(f"Score: {self.score}", 30, 1000, 50)
+        self.texts_abstracted(f"Score: {self.score}", 30, 1000, 50)
 
     def handle_events_on_menu(self):
         for event in pygame.event.get():
@@ -99,11 +99,11 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:  
-            self.abstrac("Press any key to play", 30, 550, 300)
+            self.texts_abstracted("Press any key to play", 30, 550, 300)
         else: 
-            self.abstrac(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height)
-            self.abstrac(f"You lost, your score was: {self.score}", 30, 550, 350)
-            self.abstrac("Press any key to play again", 30, 550, 400)
+            self.texts_abstracted(f"You lost, your score was: {self.score}", 30, 550, 300)
+            self.texts_abstracted(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height + 50)
+            self.texts_abstracted("Press any key to play again", 30, 550, 475)
         
         self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 140))
 
@@ -111,7 +111,7 @@ class Game:
         self.handle_events_on_menu()
 
     
-    def abstrac(self, texto, tamaño_de_fuente, pos_x, pos_y):
+    def texts_abstracted(self, texto, tamaño_de_fuente, pos_x, pos_y):
         font = pygame.font.Font(FONT_STYLE, tamaño_de_fuente)
         text = font.render(texto, True, (0, 0, 0))
         text_rect = text.get_rect()
