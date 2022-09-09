@@ -1,10 +1,11 @@
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
+
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 
-from dino_runner.utils.constants import BG, DEFAULT_TYPE, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, CLOUD, DEFAULT_TYPE, DINO_DEAD, FONT_STYLE, FUNDACION_DEL_SABER_ICON, GAME_OVER, ICON, ICON_START, JALA_ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
 
 class Game:
@@ -40,9 +41,11 @@ class Game:
         # Game loop: events - update - draw
         self.playing = True
         self.obstacle_manager.reset_obstacles()
+        self.player.power_up_time_up = -1
         self.score = 0
         self.game_speed = 20
         self.power_up_manager.reset_power_ups() 
+        self.player.dino_rect.y = self.player.Y_POS  
         while self.playing:
             self.events()
             self.update()
@@ -61,14 +64,20 @@ class Game:
         self.obstacle_manager.update(self)
         self.power_up_manager.update(self.score, self.game_speed, self.player) 
 
+
     def update_score(self):
         self.score += 1
         if self.score % 100 == 0:
             self.game_speed += 5
 
     def draw(self):
+        if self.score // 400 == 0:
+            game_color = (255, 215, 0)
+        else:
+            game_color = (255, 0, 0)
+
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        self.screen.fill(game_color)
         self.draw_background()
         self.draw_score()
         self.draw_power_up_time()
@@ -88,14 +97,14 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        self.abstractions_for_the_texts(f"Score: {self.score}", 30, 1000, 50)
+        self.abstractions_for_the_texts(f"Score: {self.score}", 1000, 50)
 
 
     def draw_power_up_time(self):
         if self.player.has_power_up:
             time_to_show = round((self.player.power_up_time_up - pygame.time.get_ticks()) / 1000, 2) 
             if time_to_show >= 0:
-                self.abstractions_for_the_texts(f"{self.player.type.capitalize()} enable for {time_to_show} seconds.", 18, 500, 40)
+                self.abstractions_for_the_texts(f"{self.player.type.capitalize()} enable for {time_to_show} seconds.", 500, 40, 18)
             else: 
                 self.player.has_power_up = False 
                 self.player.type = DEFAULT_TYPE
@@ -110,23 +119,30 @@ class Game:
     
     def show_menu(self):
         
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((139, 0, 0))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:  
-            self.abstractions_for_the_texts("Press any key to play", 30, 550, 300)
+            self.screen.blit(CLOUD, (half_screen_width -150, half_screen_height - 135))
+            self.screen.blit(CLOUD, (half_screen_width +60, half_screen_height - 150))
+            self.screen.blit(ICON_START, (half_screen_width - 50, half_screen_height - 140))
+            self.screen.blit(FUNDACION_DEL_SABER_ICON, (half_screen_width - 100, 35))
+            self.screen.blit(JALA_ICON, (half_screen_width - 195, 400))
+            self.abstractions_for_the_texts("Press any key to play", 550, 300)
+            self.abstractions_for_the_texts("Good luck", 550, 350)
         else: 
-            self.abstractions_for_the_texts(f"You lost, your score was: {self.score}", 30, 550, 300)
-            self.abstractions_for_the_texts(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height + 50)
-            self.abstractions_for_the_texts("Press any key to play again", 30, 550, 475)
+            self.screen.blit(DINO_DEAD, (half_screen_width - 30, 50))
+            self.screen.blit(GAME_OVER, (half_screen_width - 180, half_screen_height - 100))
+            self.abstractions_for_the_texts(f"Your score was: {self.score}", 550, 300)
+            self.abstractions_for_the_texts(f"Number of deaths: {self.death_count}", half_screen_width, half_screen_height + 50)
+            self.abstractions_for_the_texts("Press any key to restart", 550, 475)
         
-        self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 140))
 
         pygame.display.update()
         self.handle_events_on_menu()
 
-    def abstractions_for_the_texts(self, texts, font_size, pos_x, pos_y):
+    def abstractions_for_the_texts(self, texts, pos_x, pos_y, font_size = 30):
         font = pygame.font.Font(FONT_STYLE, font_size)
         text = font.render(texts, True, (0, 0, 0))
         text_rect = text.get_rect()

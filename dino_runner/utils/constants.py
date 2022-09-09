@@ -2,7 +2,7 @@ import pygame
 import os
 
 # Global Constants
-TITLE = "Chrome Dino Runner"
+TITLE = "Chrome Dino Runner by: Abel Sossa"
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 FPS = 30
@@ -10,6 +10,11 @@ IMG_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 
 # Assets Constants
 ICON = pygame.image.load(os.path.join(IMG_DIR, "DinoWallpaper.png"))
+ICON_START = pygame.image.load(os.path.join(IMG_DIR, "Dino/DinoStart.png"))
+GAME_OVER = pygame.image.load(os.path.join(IMG_DIR, "GameOver.png"))
+JALA_ICON = pygame.image.load(os.path.join(IMG_DIR, "JalaWallpaper.png"))
+FUNDACION_DEL_SABER_ICON = pygame.image.load(os.path.join(IMG_DIR, "FundacionDelSaber.png"))
+DINO_DEAD = pygame.image.load(os.path.join(IMG_DIR, "Dino/DinoDead.png"))
 
 RUNNING = [
     pygame.image.load(os.path.join(IMG_DIR, "Dino/DinoRun1.png")),
@@ -72,3 +77,4 @@ HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 DEFAULT_TYPE = "default"
 FONT_STYLE = "freesansbold.ttf"
 SHIELD_TYPE = "shield" 
+HAMMER_TYPE = "hammer"
