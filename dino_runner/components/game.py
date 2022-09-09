@@ -2,8 +2,9 @@ import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
+from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 
-from dino_runner.utils.constants import BG, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, DEFAULT_TYPE, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
 
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
+        self.power_up_manager = PowerUpManager() 
 
         self.running = False 
         self.score = 0
@@ -40,6 +42,7 @@ class Game:
         self.obstacle_manager.reset_obstacles()
         self.score = 0
         self.game_speed = 20
+        self.power_up_manager.reset_power_ups() 
         while self.playing:
             self.events()
             self.update()
@@ -56,6 +59,7 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self)
+        self.power_up_manager.update(self.score, self.game_speed, self.player) 
 
     def update_score(self):
         self.score += 1
@@ -67,8 +71,10 @@ class Game:
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.draw_score()
+        self.draw_power_up_time()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen) 
         pygame.display.update()
         pygame.display.flip()
 
@@ -82,7 +88,17 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        self.texts_abstracted(f"Score: {self.score}", 30, 1000, 50)
+        self.abstractions_for_the_texts(f"Score: {self.score}", 30, 1000, 50)
+
+
+    def draw_power_up_time(self):
+        if self.player.has_power_up:
+            time_to_show = round((self.player.power_up_time_up - pygame.time.get_ticks()) / 1000, 2) 
+            if time_to_show >= 0:
+                self.abstractions_for_the_texts(f"{self.player.type.capitalize()} enable for {time_to_show} seconds.", 18, 500, 40)
+            else: 
+                self.player.has_power_up = False 
+                self.player.type = DEFAULT_TYPE
 
     def handle_events_on_menu(self):
         for event in pygame.event.get():
@@ -99,24 +115,20 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:  
-            self.texts_abstracted("Press any key to play", 30, 550, 300)
+            self.abstractions_for_the_texts("Press any key to play", 30, 550, 300)
         else: 
-            self.texts_abstracted(f"You lost, your score was: {self.score}", 30, 550, 300)
-            self.texts_abstracted(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height + 50)
-            self.texts_abstracted("Press any key to play again", 30, 550, 475)
+            self.abstractions_for_the_texts(f"You lost, your score was: {self.score}", 30, 550, 300)
+            self.abstractions_for_the_texts(f"Number of deaths: {self.death_count}", 30, half_screen_width, half_screen_height + 50)
+            self.abstractions_for_the_texts("Press any key to play again", 30, 550, 475)
         
         self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 140))
 
         pygame.display.update()
         self.handle_events_on_menu()
 
-    
-    def texts_abstracted(self, texto, tamaño_de_fuente, pos_x, pos_y):
-        font = pygame.font.Font(FONT_STYLE, tamaño_de_fuente)
-        text = font.render(texto, True, (0, 0, 0))
+    def abstractions_for_the_texts(self, texts, font_size, pos_x, pos_y):
+        font = pygame.font.Font(FONT_STYLE, font_size)
+        text = font.render(texts, True, (0, 0, 0))
         text_rect = text.get_rect()
         text_rect.center = (pos_x, pos_y)
         self.screen.blit(text, text_rect)
-
-
-
